@@ -69,13 +69,14 @@ Details of the results is described in the table below.
                           pvalue.cut = 0.1,
 		              knn = 5,
                           verbose = TRUE)
+   
      [INFO] Identification of cell type-specific genes...
      [INFO] Estimate the number of single cells in the spot
-	   [INFO] Integrate single-cell and spatial spot data
+     [INFO] Integrate single-cell and spatial spot data
      [INFO] Train a random forest model and predict,waiting...
-	   [INFO] Map single cells onto spatial spots
-	   [INFO] Construct Seurat object
-	   [INFO] Finish!
+     [INFO] Map single cells onto spatial spots
+     [INFO] Construct Seurat object
+     [INFO] Finish!
   
 
 
