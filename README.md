@@ -78,5 +78,28 @@ Details of the results is described in the table below.
      [INFO] Construct Seurat object
      [INFO] Finish!
   
+## Visualization 
+```
+sc.data <- sc.data %>%
+           NormalizeData() %>%
+           FindVariableFeatures() %>%
+           ScaleData() %>%
+           RunPCA() %>%
+           RunUMAP(dims = 1:30)
+```
 
-
+```
+colors <- c("Astro" = "brown3","L2/3 IT" = "chartreuse3","L4" = "khaki1","L5 IT" = "plum1","L5 PT" = "#06986b","L6 CT" ="lightskyblue",
+             "L6 IT" = "darkorange","L6b" ="hotpink","Lamp5" ="seashell3","NP" ="#a75629","Pvalb" ="#986ada","Sst" = "#3973d5","Vip" = "#edad0e")
+p1 <- DimPlot(sc.data,group.by= "subclass",label = T,label.size = 6,
+        cols = colors, pt.size = 1.5 , repel = T ) + 
+        NoLegend() + labs(x = "UMAP1",y = "UMAP2", title = "CellType") +
+        theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
+        theme(axis.title.x =element_text(size=24), axis.title.y=element_text(size=24))+
+        theme(plot.title = element_text(hjust = 0.5,size = 20, face = "bold"),
+        axis.text=element_text(size=12,face = "bold"),
+        axis.title.x=element_text(size=14),
+        axis.title.y=element_text(size=14))
+p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType",pt.size.factor = 1,label.size = 8,cols = colors)+
+      theme(legend.text=element_text(size= 10))
+```
