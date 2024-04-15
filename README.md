@@ -94,6 +94,7 @@ sc.data <- sc.data %>%
 ```
 colors <-c("B-cells" = "#e68fac","CAFs" = "#a1caf1","Cancer Epithelial" = "#f7b565","Endothelial" = "#875692",
            "Myeloid" = "#d14c6f","Normal Epithelial" = "#894846","Plasmablasts" = "#848482","PVL" = "#56af8f","T-cells" = "#0067a5")
+
 p1 <- DimPlot(sc.data,group.by= "celltype_major",label = T,label.size = 6,
               cols = colors, pt.size = 1.5 , repel = T ) + 
               NoLegend() + labs(x = "UMAP1",y = "UMAP2", title = "CellType") +
@@ -103,9 +104,11 @@ p1 <- DimPlot(sc.data,group.by= "celltype_major",label = T,label.size = 6,
               axis.text=element_text(size=12,face = "bold"),
               axis.title.x=element_text(size=14),
               axis.title.y=element_text(size=14))
+
 p2 <- SpatialDimPlot(results, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
+
 p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
