@@ -50,6 +50,32 @@ coord.df <- st.data@images$anterior1@coordinates[,c(4,5)]
 |factor.size|Factor size for scaling the weight of gene expression. Default: 0.1.|
 |seed.num|Number of seed genes of each cell type for recognizing marker genes. Default: 10.|
 |pvalue.cut|Threshold for filtering cell type-specific markers. Default: 0.01|
-|verbose|Show running messages or not. Default: TRUE.|
+|knn       |The number of nearest neighboring single cells for each spot. Default: 5|
+|verbose   |Show running messages or not. Default: TRUE.|
+
+## Run CellMapper  to assign single cells to spatial locations.
+Details of the results is described in the table below.
+|**output**|**details**|
+|------|-------|
+|sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
+|decon |The cellular composition of each spot in tissue sections.|
+
+    results <- CellMapper(st.data = st.data,
+                          coord.df = coord.df,
+                          ref.expr = ref.expr,
+                          ref.anno = ref.anno,
+                          factor.size = 0.1,
+                          seed.num = 10,
+                          pvalue.cut = 0.1,
+		              knn = 5,
+                          verbose = TRUE)
+     [INFO] Identification of cell type-specific genes...
+     [INFO] Estimate the number of single cells in the spot
+	   [INFO] Integrate single-cell and spatial spot data
+     [INFO] Train a random forest model and predict,waiting...
+	   [INFO] Map single cells onto spatial spots
+	   [INFO] Construct Seurat object
+	   [INFO] Finish!
+  
 
 
