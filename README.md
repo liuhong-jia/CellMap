@@ -14,9 +14,9 @@ devtools::install_github("liuhong-jia/CellMapper")
 ```
 
 ## Dependencies
-● R version >= 4.3.0.
+- R version >= 4.3.0.
 
-● R packages: Seurat, dplyr, ggplot2, Matrix, jsonlite, magrittr, randomForest, parallel
+- R packages: Seurat, dplyr, ggplot2, Matrix, jsonlite, magrittr, randomForest, parallel
 
 ## Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
 
@@ -33,7 +33,7 @@ library(parallel)
 ```
 
 ```
-sc.data <- readRDS(system.file("data", "cortex.sc.rds", package = "CellMapper"))
+sc.data <- readRDS(system.file("data", "sc.rds", package = "CellMapper"))
 st.data <- readRDS(system.file("data", "st.rds",package = "CellMapper"))
 ref.repr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
 ref.anno <- sc.data$subclass %>% as.vector
@@ -41,3 +41,15 @@ coord.df <- st.data@images$anterior1@coordinates[,c(4,5)]
 ```
 
 ## Setting the parameters
+|**Parameters**|**Description**                      |
+|----------|-----------------------------------------|
+|st.data   |A Seurat object of spatial transcriptomics data.|
+|coord.df  |The spatial coordinates of tissue sections in spatial transcriptomic data.|
+|ref.expr  | The gene expression profile of scRNA-seq data.|
+|ref.anno  |Cell type information of scRNA-seq data, corresponding to the above `ref.expr`.|
+|factor.size|Factor size for scaling the weight of gene expression. Default: 0.1.|
+|seed.num|Number of seed genes of each cell type for recognizing marker genes. Default: 10.|
+|pvalue.cut|Threshold for filtering cell type-specific markers. Default: 0.01|
+|verbose|Show running messages or not. Default: TRUE.|
+
+
