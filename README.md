@@ -105,7 +105,7 @@ p1 <- DimPlot(sc.data,group.by= "celltype_major",label = T,label.size = 6,
               axis.title.x=element_text(size=14),
               axis.title.y=element_text(size=14))
 
-p2 <- SpatialDimPlot(results, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
+p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
 
