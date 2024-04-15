@@ -1,7 +1,7 @@
 Package: CellMapper
 Title: CellMapper:precision mapping of cellular landscape at single-cell resolution
 Version: 1.0.0
-Authors@R: person("Liu", "Hongjia", "230218827@seu.edu.cn", role = c("aut"))
+Authors: c(person("Liu", "Hongjia", "230218827@seu.edu.cn", role = c("aut")))
 Description: A tool for mapping single cells onto saptial locations of tissue section.
 License: GPL (>= 3)
 Encoding: UTF-8
