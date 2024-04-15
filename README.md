@@ -35,4 +35,9 @@ library(parallel)
 ```
 sc.data <- readRDS(system.file("data", "cortex.sc.rds", package = "CellMapper"))
 st.data <- readRDS(system.file("data", "st.rds",package = "CellMapper"))
+ref.repr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
+ref.anno <- sc.data$subclass %>% as.vector
+coord.df <- st.data@images$anterior1@coordinates[,c(4,5)]
 ```
+
+## Setting the parameters
