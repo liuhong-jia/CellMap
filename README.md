@@ -3,7 +3,7 @@ CellMapper is an innovative tool crafted to precisely map individual cells onto 
 
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/workflow.png)
 
-In this tutorial, we will illustrate the installation and usage of CellMapper using the mouse brain cortex dataset as an example.
+In this tutorial, we will illustrate the installation and usage of CellMapper using the HER2+ breast cancer dataset as an example.
 
 ## Installing the package
 To install CellMapper,we recommed using devtools:
@@ -31,13 +31,16 @@ library(magrittr)
 library(randomForest)
 library(parallel)
 ```
+A zip file containing single-cell and spatial transcriptomics data can be downloaded from the following link:
+
+[example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
 
 ```
-sc.data <- readRDS(system.file("data", "sc.rds", package = "CellMapper"))
-st.data <- readRDS(system.file("data", "st.rds",package = "CellMapper"))
+sc.data <- readRDS("sc.obj.rds")
+st.data <- readRDS("st.obj.rds")
 ref.repr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
-ref.anno <- sc.data$subclass %>% as.vector
-coord.df <- st.data@images$anterior1@coordinates[,c(4,5)]
+ref.anno <- sc.data$celltype_major %>% as.vector
+coord.df <- st.data@images$image@coordinates[,c(4,5)]
 ```
 
 ## Setting the parameters
@@ -89,9 +92,9 @@ sc.data <- sc.data %>%
 ```
 
 ```
-colors <- c("Astro" = "brown3","L2/3 IT" = "chartreuse3","L4" = "khaki1","L5 IT" = "plum1","L5 PT" = "#06986b","L6 CT" ="lightskyblue",
-             "L6 IT" = "darkorange","L6b" ="hotpink","Lamp5" ="seashell3","NP" ="#a75629","Pvalb" ="#986ada","Sst" = "#3973d5","Vip" = "#edad0e")
-p1 <- DimPlot(sc.data,group.by= "subclass",label = T,label.size = 6,
+colors <-c("B-cells" = "#e68fac","CAFs" = "#a1caf1","Cancer Epithelial" = "#f7b565","Endothelial" = "#875692",
+           "Myeloid" = "#d14c6f","Normal Epithelial" = "#894846","Plasmablasts" = "#848482","PVL" = "#56af8f","T-cells" = "#0067a5")
+p1 <- DimPlot(sc.data,group.by= "celltype_major",label = T,label.size = 6,
               cols = colors, pt.size = 1.5 , repel = T ) + 
               NoLegend() + labs(x = "UMAP1",y = "UMAP2", title = "CellType") +
               theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
@@ -100,6 +103,9 @@ p1 <- DimPlot(sc.data,group.by= "subclass",label = T,label.size = 6,
               axis.text=element_text(size=12,face = "bold"),
               axis.title.x=element_text(size=14),
               axis.title.y=element_text(size=14))
-p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType",pt.size.factor = 1,label.size = 8,cols = colors)+
-      theme(legend.text=element_text(size= 10))
+p2 <- SpatialDimPlot(results, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
+                   theme(legend.title = element_text(size = 14),  
+                   legend.text = element_text(size = 12))
+p1 + p2
 ```
+![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
