@@ -233,7 +233,7 @@ createSeuratObj <- function(st.obj, sc.obj, mapping){
   mapping$Cell.new <- make.names(mapping$Cell,unique = T)
   sc.obj$cell <- names(sc.obj$orig.ident)
   obj <- CreateSeuratObject(counts = sc.obj@assays$RNA[, mapping$Cell] %>% set_colnames(mapping$Cell.new),
-                            project = 'Cell2Space', assay = "RNA",
+                            project = 'CellMapper', assay = "RNA",
                             meta.data = sc.obj@meta.data[mapping$Cell, ] %>%
                               dplyr::rename(Cell.raw = cell) %>%
                               mutate(Cell.new = mapping$Cell.new) %>%
