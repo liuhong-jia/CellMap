@@ -245,7 +245,7 @@ createSeuratObj <- function(st.obj, sc.obj, mapping){
   sc.coord.obj <- CreateDimReducObject(embeddings = mapping %>%
                                          dplyr::mutate(coord1 = cell.y, coord2 = max(cell.x)+ min(cell.x)- cell.x) %>%
                                          dplyr::select(c(coord1, coord2)) %>% set_rownames(mapping$Cell.new) %>% as.matrix,
-                                       assay = "RNA", key = 'Cell2Space_')
+                                       assay = "RNA", key = 'CellMapper_')
   
   sc.pca.obj <- CreateDimReducObject(embeddings = sc.obj@reductions$pca@cell.embeddings[mapping$Cell, ] %>%
                                        set_rownames(mapping$Cell.new) %>% as.matrix, assay = "RNA", key = 'pca_')
