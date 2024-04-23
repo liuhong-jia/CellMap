@@ -3,7 +3,7 @@ CellMap is an innovative tool crafted to precisely map individual cells onto spa
 
 ![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/workflow.png)
 
-In this tutorial, we will illustrate the installation and usage of CellMapper using the HER2+ breast cancer dataset as an example.
+In this tutorial, we will illustrate the installation and usage of CellMap using the HER2+ breast cancer dataset as an example.
 
 ## Installing the package
 To install CellMap,we recommed using devtools:
