@@ -1,7 +1,7 @@
 # CellMap 
 CellMap is an innovative tool crafted to precisely map individual cells onto spatial coordinates within tissue slices. Its broad utility lies in unveiling the spatial distribution of cell types, dissecting cellular compositions within tissue section spatial spots, and identifying critical functional structures within biological systems.
 
-![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/workflow.png)
+![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/workflow.png)
 
 In this tutorial, we will illustrate the installation and usage of CellMapper using the HER2+ breast cancer dataset as an example.
 
@@ -10,7 +10,7 @@ To install CellMap,we recommed using devtools:
 
 ```
 library(devtools)
-devtools::install_github("liuhong-jia/CellMapper")  
+devtools::install_github("liuhong-jia/CellMap")  
 ```
 
 ## Dependencies
@@ -21,7 +21,7 @@ devtools::install_github("liuhong-jia/CellMapper")
 ## Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
 
 ```
-library(CellMapper)
+library(CellMap)
 library(devtools)
 library(Seurat)
 library(dplyr)
@@ -63,7 +63,7 @@ Details of the results is described in the table below.
 |sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
 |decon |The cellular composition of each spot in tissue sections.|
 
-    results <- CellMapper(st.data = st.data,
+    results <- CellMap(st.data = st.data,
                           coord.df = coord.df,
                           ref.expr = ref.expr,
                           ref.anno = ref.anno,
