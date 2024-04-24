@@ -61,7 +61,7 @@ CellMap <- function(st.data = st.data,
   dist <- getDistMatrix(sc.st.obj)
   #nearCells <- getUniqueCells(dist, k = 3)
   
-  nearCells <- getCells(dist,k = 5)
+  nearCells <- getCells(dist,knn = 5)
   
   print('[INFO] Train a random forest model and predict',verbose = verbose)
   
