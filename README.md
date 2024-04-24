@@ -38,7 +38,7 @@ A zip file containing single-cell and spatial transcriptomics data can be downlo
 ```
 sc.data <- readRDS("sc.obj.rds")
 st.data <- readRDS("st.obj.rds")
-ref.repr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
+ref.expr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
 ref.anno <- sc.data$celltype_major %>% as.vector
 coord.df <- st.data@images$image@coordinates[,c(4,5)]
 ```
