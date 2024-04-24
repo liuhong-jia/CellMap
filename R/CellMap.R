@@ -8,6 +8,7 @@
 #' @param factor.size Factor size for scaling the weight of gene expression. Default: 0.1.
 #' @param seed.num Number of seed genes of each cell type for recognizing candidate markers. Default: 10.
 #' @param pvalue.cut Threshold for filtering cell type marker genes. Default: 0.1
+#' @param knn The number of nearest neighboring single cells for each spot. Default: 0.1
 #' @param verbose Show running messages or not. Default: TRUE.
 #' @export 
 #' @example	
@@ -22,6 +23,7 @@ CellMap <- function(st.data = st.data,
                        factor.size = 0.1,
                        seed.num = 10,
                        pvalue.cut = 0.1,
+                       knn =5,
                        verbose = TRUE)
 {
   st.data.counts <- st.data@assays$Spatial@counts %>% as.matrix
