@@ -12,6 +12,7 @@ Depends:
 	ggplot2
 Imports:
 	Matrix,
+	clue,
 	jsonlite,
 	magrittr,
 	randomForest,
