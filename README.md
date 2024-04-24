@@ -16,7 +16,7 @@ devtools::install_github("liuhong-jia/CellMap")
 ## Dependencies
 - R version >= 4.3.0.
 
-- R packages: Seurat, dplyr, ggplot2, Matrix, jsonlite, magrittr, randomForest, parallel
+- R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
 
 ## Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
 
