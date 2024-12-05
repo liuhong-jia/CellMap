@@ -187,7 +187,9 @@ coord.df <- st.data@images$slice1.008um$centroids@coords %>% as.data.frame
 rownames(coord.df) <- st.data@images$slice1.008um@boundaries$centroids@cells
 metadata = st.data@meta.data
 st.obj <- createSpatialObject(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
-
+```
+- Run CellMap
+```
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("x","y"),
