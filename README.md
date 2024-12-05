@@ -87,8 +87,7 @@ Details of the results is described in the table below.
 |------|-------|
 |sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
 |decon |The cellular composition of each spot in tissue section.|
-## Visualization 
-
+- Visualization 
 ```
 colors <-c("B-cells" = "#e68fac","CAFs" = "#a1caf1","Cancer Epithelial" = "#f7b565","Endothelial" = "#875692",
            "Myeloid" = "#d14c6f","Normal Epithelial" = "#894846","Plasmablasts" = "#848482","PVL" = "#56af8f","T-cells" = "#0067a5")
