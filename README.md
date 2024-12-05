@@ -18,7 +18,7 @@ devtools::install_github("liuhong-jia/CellMap")
 ## 2. Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
 - 10X Visium low-resolution ST data of human HER2+ breast cancer as an example
 - A zip file containing single-cell and spatial transcriptomics data can be downloaded from the following link:
-- [10X Visium example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
+- [example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
 
 ```
 library(CellMap)
@@ -60,19 +60,19 @@ st.obj <- readRDS("st.obj.rds")
 ## 4. Run CellMap to assign single cells on 10X Visium spatial transcriptome data.
 	results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
-		        coord = c("imagerow","imagecol"),
-	                resolution = 0.8,
-		        celltype.column = "idents",
-		        sc.sub.size = NULL,
-		      	min.sc.cell = 50,
-                      	factor.size = 0.1,
-                      	seed.num = 10,
-                      	pvalue.cut = 0.1,
-                      	knn = 5,
-		      	mean.cell.num = 5,
-		      	max.cell.num = 10,
-		      	n.workers = 4,
-                      	verbose = TRUE)
+		        	coord = c("imagerow","imagecol"),
+	                	resolution = 0.8,
+		        	celltype.column = "idents",
+		        	sc.sub.size = NULL,
+		      		min.sc.cell = 50,
+                      factor.size = 0.1,
+                      seed.num = 10,
+                      pvalue.cut = 0.1,
+                      knn = 5,
+		      		mean.cell.num = 5,
+		      		max.cell.num = 10,
+		      		n.workers = 4,
+                      verbose = TRUE)
    
      [INFO] Identification of cell type-specific genes...
      [INFO] Estimate the number of single cells in the spot
@@ -121,11 +121,58 @@ st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = m
 # meta.data : Optional metadata data frame, where rows are barcodes.
 ```
 - Assign single cells to spatial spots by setting knn = 1, mean.cell.num = 1. Since each spot in Visium HD data contains only a single cell, the parameter max.cell.num is set to 1 for mapping. 
-- Visium HD high-resoluiton ST data of human CRC as an example
-- [Visium HD example data])<https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc>
+- Visium HD high-resoluiton ST data of human CRC as an example(<https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc>)
 
+- scRNA-seq preprocessing
 ```
-sc.obj <- readRDS("path/sc.obj.rds")
+crc.obj <- Read10X_h5("HumanColonCancer_Flex_Multiplex_count_filtered_feature_bc_matrix.h5")
+crc.sc.obj <- CreateSeuratObject(crc.obj)
+crc.sc.obj$orig.ident <- "CRC"
+metadata <- read.csv("SingleCell_MetaData.csv")
+
+rownames(metadata) <- metadata$Barcode  
+crc.sc.obj <- AddMetaData(crc.sc.obj, metadata = metadata)
+
+p1.sc.obj <- subset(crc.sc.obj,subset = Patient=="P1CRC")
+sc.obj <- subset(sc.obj,subset = QCFilter=="Keep")
+
+###Merge the cell subtypes into broader cell types.
+level2_to_level1 <- c(
+  "CAF" = "Fibroblast",
+  "CD4 T cell" = "T cells",
+  "CD8 Cytotoxic T cell" = "T cells",
+  "Endothelial" = "Endothelial",
+  "Enteric Glial" = "Neuronal",
+  "Enterocyte" = "Intestinal Epithelial",
+  "Epithelial" = "Intestinal Epithelial",
+  "Fibroblast" = "Fibroblast",
+  "Goblet" = "Intestinal Epithelial",
+  "Lymphatic Endothelial" = "Endothelial",
+  "Macrophage" = "Myeloid",
+  "Mast" = "Myeloid",
+  "Mature B" = "B cells",
+  "mRegDC" = "Myeloid",
+  "Myofibroblast" = "Fibroblast",
+  "Neuroendocrine" = "Neuronal",
+  "Neutrophil" = "Myeloid",
+  "pDC" = "Myeloid",
+  "Pericytes" = "Endothelial",
+  "Plasma" = "B cells",
+  "Proliferating Immune II" = "T cells",
+  "SM Stress Response" = "Smooth Muscle",
+  "Smooth Muscle" = "Smooth Muscle",
+  "Tuft" = "Intestinal Epithelial",
+  "Tumor I" = "Tumor",
+  "Tumor II" = "Tumor",
+  "Tumor III" = "Tumor",
+  "Tumor V" = "Tumor",
+  "Unknown III (SM)" = "Smooth Muscle",
+  "vSM" = "Smooth Muscle"
+)
+
+sc.obj$celltype <- level2_to_level1[sc.obj$Level2]
+Idents(sc.obj) <- sc.obj$celltype
+
 st.obj <- readRDS("path/st.obj.RDS")
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
@@ -145,3 +192,4 @@ results <- CellMap(st.obj = st.obj,
 SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors,image.alpha = 0) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
+
