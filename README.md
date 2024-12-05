@@ -125,7 +125,7 @@ st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = m
 
 - scRNA-seq preprocessing
 ```
-crc.obj <- Read10X_h5("HumanColonCancer_Flex_Multiplex_count_filtered_feature_bc_matrix.h5")
+crc.obj <- Read10X_h5("path/HumanColonCancer_Flex_Multiplex_count_filtered_feature_bc_matrix.h5")
 crc.sc.obj <- CreateSeuratObject(crc.obj)
 crc.sc.obj$orig.ident <- "CRC"
 metadata <- read.csv("SingleCell_MetaData.csv")
@@ -186,10 +186,24 @@ DimPlot(sc.obj,group.by= "celltype",label = T,label.size = 5,
   theme(axis.title.x = element_text(size=24), axis.title.y = element_text(size=24))+
   theme(plot.title = element_text(hjust = 0.5,size = 20,face = "plain"),axis.text=element_text(size=12),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
 ```
-![image]("https://github.com/liuhong-jia/CellMap/blob/main/vignettes/ViisumHD.sc.UMAP.png")
+![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/ViisumHD.sc.UMAP.png)
 
 ```
-st.obj <- readRDS("path/st.obj.RDS")
+- ST data preprocessing
+```
+st.data <- readRDS("path/st.visiumHD.P1CRC.8um.rds")
+metadata <- read.csv("DeconvolutionResults_P1CRC.csv")
+rownames(metadata) <- metadata$barcode
+metadata <- metadata[rownames(st.data@meta.data),]
+st.data <- AddMetaData(st.data, metadata = metadata)
+st.data <- subset(st.data, subset = DeconvolutionClass == "singlet")
+
+counts <- GetAssayData(st.data,layer = "counts")
+coord.df <- st.data@images$slice1.008um$centroids@coords %>% as.data.frame
+rownames(coord.df) <- st.data@images$slice1.008um@boundaries$centroids@cells
+metadata = st.data@meta.data
+st.obj <- createSpatialObject(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
+
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("x","y"),
