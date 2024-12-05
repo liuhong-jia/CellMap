@@ -6,16 +6,16 @@ CellMap is an innovative tool crafted to precisely map individual cells onto spa
 In this tutorial, we will demonstarte how to install and use CellMap to resolve spatial tranmscriptomic spots at single-cell resolution.
 
 
-## 1.Installing the package and dependencices
+## 1. Installing the package and dependencices
 To install CellMap,we recommed using devtools:
 ```
 library(devtools)
 devtools::install_github("liuhong-jia/CellMap")  
 ```
 - Dependencies
-- R version >= 4.3.0.
-- R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
-## 2.Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
+  R version >= 4.3.0.
+  R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
+## 2. Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
 - 10X Visium low-resolution ST data of human HER2+ breast cancer as an sample
 
 ```
