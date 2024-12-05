@@ -59,22 +59,27 @@ st.data <- readRDS("st.obj.rds")
 |n.workers|Number of cores to be used for parallel processing. Default: 4.|
 |verbose|Show running messages or not. Default: TRUE.|
 
-## Run CellMapper  to assign single cells to spatial locations.
+## Run CellMapper  to assign single cells on 10X Visium human HER2+ breast data.
 Details of the results is described in the table below.
 |**output**|**details**|
 |------|-------|
 |sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
 |decon |The cellular composition of each spot in tissue sections.|
 
-    results <- CellMap(st.data = st.data,
-                          coord.df = coord.df,
-                          ref.expr = ref.expr,
-                          ref.anno = ref.anno,
-                          factor.size = 0.1,
-                          seed.num = 10,
-                          pvalue.cut = 0.1,
-		              knn = 5,
-                          verbose = TRUE)
+  results <-  CellMap(st.obj = st.obj,
+                      sc.obj = sc.obj,
+		      coord = c("imagerow","imagecol"),
+		      celltype.column = "idents",
+		      sc.sub.size = NULL,
+		      min.sc.cell = 50,
+                      factor.size = 0.1,
+                      seed.num = 10,
+                      pvalue.cut = 0.1,
+                      knn = 5,
+		      mean.cell.num = 5,
+		      max.cell.num = 10,
+		      n.workers = 4,
+                      verbose = TRUE)
    
      [INFO] Identification of cell type-specific genes...
      [INFO] Estimate the number of single cells in the spot
