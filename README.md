@@ -184,9 +184,11 @@ DimPlot(sc.obj,group.by= "celltype",label = T,label.size = 5,
   NoLegend() + labs(x = "UMAP1",y = "UMAP2",title = "CellType") +
   theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
   theme(axis.title.x = element_text(size=24), axis.title.y = element_text(size=24))+
-  theme(plot.title = element_text(hjust = 0.5,size = 20,face = "plain"),axis.text=element_text(size=12),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14)) 
-![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/ViisumHD.sc.UMAP.png)
+  theme(plot.title = element_text(hjust = 0.5,size = 20,face = "plain"),axis.text=element_text(size=12),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
+```
+![image]("https://github.com/liuhong-jia/CellMap/blob/main/vignettes/ViisumHD.sc.UMAP.png")
 
+```
 st.obj <- readRDS("path/st.obj.RDS")
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
@@ -206,6 +208,6 @@ results <- CellMap(st.obj = st.obj,
 SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors,image.alpha = 0) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
-
+```
 ![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/VisiumHD.CellMap.png)
 
