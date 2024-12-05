@@ -67,10 +67,10 @@ Details of the results is described in the table below.
 |decon |The cellular composition of each spot in tissue sections.|
 
 	results <-  CellMap(st.obj = st.obj,
-                      	sc.obj = sc.obj,
-		      	coord = c("imagerow","imagecol"),
-		      	celltype.column = "idents",
-		      	sc.sub.size = NULL,
+                        sc.obj = sc.obj,
+		        coord = c("imagerow","imagecol"),
+		        celltype.column = "idents",
+		        sc.sub.size = NULL,
 		      	min.sc.cell = 50,
                       	factor.size = 0.1,
                       	seed.num = 10,
