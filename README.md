@@ -3,22 +3,20 @@ CellMap is an innovative tool crafted to precisely map individual cells onto spa
 
 ![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/workflow.png)
 
-In this tutorial, we will illustrate the installation and usage of CellMap using the HER2+ breast cancer dataset as an example.
+In this tutorial, we will demonstarte how to install and use CellMap to resolve spatial tranmscriptomic spots at single-cell resolution.
 
-## Installing the package
+
+## 1.Installing the package and dependencices
 To install CellMap,we recommed using devtools:
-
 ```
 library(devtools)
 devtools::install_github("liuhong-jia/CellMap")  
 ```
-
-## Dependencies
+- Dependencies
 - R version >= 4.3.0.
-
 - R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
-
-## Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
+## 2.Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
+- 10X Visium low-resolution ST data of human HER2+ breast cancer as an sample
 
 ```
 library(CellMap)
@@ -32,16 +30,13 @@ library(magrittr)
 library(randomForest)
 library(parallel)
 ```
-A zip file containing single-cell and spatial transcriptomics data can be downloaded from the following link:
-
-[example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
 
 ```
-sc.data <- readRDS("sc.obj.rds")
-st.data <- readRDS("st.obj.rds")
+sc.obj <- readRDS("sc.obj.rds")
+st.obj <- readRDS("st.obj.rds")
 ```
 
-## Setting the parameters
+## 3. Setting the parameters
 |**Parameters**|**Description**                      |
 |----------|-----------------------------------------|
 |st.obj    |Seurat object of spatial transcriptome data.|
@@ -59,13 +54,7 @@ st.data <- readRDS("st.obj.rds")
 |n.workers|Number of cores to be used for parallel processing. Default: 4.|
 |verbose|Show running messages or not. Default: TRUE.|
 
-## Run CellMapper  to assign single cells on 10X Visium human HER2+ breast data.
-Details of the results is described in the table below.
-|**output**|**details**|
-|------|-------|
-|sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
-|decon |The cellular composition of each spot in tissue sections.|
-
+## 4. Run CellMap to assign single cells on spatial transcriptome data.
 	results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
 		        coord = c("imagerow","imagecol"),
@@ -88,7 +77,12 @@ Details of the results is described in the table below.
      [INFO] Map single cells onto spatial spots
      [INFO] Construct Seurat object
      [INFO] Finish!
-  
+
+Details of the results is described in the table below.
+|**output**|**details**|
+|------|-------|
+|sc.out|Seurat object of spatial transcriptomic data with single-cell resolution.|
+|decon |The cellular composition of each spot in tissue section.|
 ## Visualization 
 
 ```
@@ -105,7 +99,7 @@ p1 <- DimPlot(sc.data,group.by= "celltype_major",label = T,label.size = 6,
               axis.title.x=element_text(size=14),
               axis.title.y=element_text(size=14))
 
-p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
+p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors,image.alpha = 0) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
 
@@ -113,4 +107,4 @@ p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
 
-## Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform .
+## Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform.
