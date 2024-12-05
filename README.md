@@ -172,22 +172,6 @@ level2_to_level1 <- c(
 
 sc.obj$celltype <- level2_to_level1[sc.obj$Level2]
 Idents(sc.obj) <- sc.obj$celltype
-
-colors <- c("B cells" = "#6baed6","Endothelial" = "#66c2a5","Fibroblast" = "#f781bf",
-            "Intestinal Epithelial" = "#fc8d62","Myeloid" = "#8da0cb","Neuronal" = "#377eb8",
-			"Smooth Muscle" = "#ffed6f","T cells" = "#ccebc5","Tumor" = "#ee6655")
-
-DimPlot(sc.obj,group.by= "celltype",label = T,label.size = 5,
-        cols =colors,
-        pt.size = 0.6,
-        repel = T ) + 
-  NoLegend() + labs(x = "UMAP1",y = "UMAP2",title = "CellType") +
-  theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
-  theme(axis.title.x = element_text(size=24), axis.title.y = element_text(size=24))+
-  theme(plot.title = element_text(hjust = 0.5,size = 20,face = "plain"),axis.text=element_text(size=12),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
-```
-![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/ViisumHD.sc.UMAP.png)
-
 ```
 - ST data preprocessing
 ```
@@ -224,4 +208,5 @@ SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.
                    legend.text = element_text(size = 12))
 ```
 ![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/VisiumHD.CellMap.png)
+
 
