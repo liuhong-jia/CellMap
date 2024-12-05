@@ -12,11 +12,13 @@ To install CellMap,we recommed using devtools:
 library(devtools)
 devtools::install_github("liuhong-jia/CellMap")  
 ```
-- Dependencies
-  R version >= 4.3.0.
+- Dependencies  
+  R version >= 4.3.0.  
   R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
 ## 2. Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
-- 10X Visium low-resolution ST data of human HER2+ breast cancer as an sample
+- 10X Visium low-resolution ST data of human HER2+ breast cancer as an example
+- A zip file containing single-cell and spatial transcriptomics data can be downloaded from the following link:
+- [10X Visium example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
 
 ```
 library(CellMap)
@@ -42,6 +44,7 @@ st.obj <- readRDS("st.obj.rds")
 |st.obj    |Seurat object of spatial transcriptome data.|
 |sc.obj    |Seurat object of scRNA-seq data.|
 |coord     |Coordinates column names in ST images slot.coord = c("x","y") or coord = c("imagerow","imagecol").|
+|resolution|The clustering resolution for spatial transcriptomics data. Default:0.3.|
 |celltype.column|The column name for cell type in the single-cell Seurat object, with the default value as "idents".|
 |sc.sub.size|Downsampling proportion or number for scRNA-seq data. Default: NULL.|
 |min.sc.cells|The minimum number of cell types in scRNA-seq data.Default: 50.|
@@ -54,10 +57,11 @@ st.obj <- readRDS("st.obj.rds")
 |n.workers|Number of cores to be used for parallel processing. Default: 4.|
 |verbose|Show running messages or not. Default: TRUE.|
 
-## 4. Run CellMap to assign single cells on spatial transcriptome data.
+## 4. Run CellMap to assign single cells on 10X Visium spatial transcriptome data.
 	results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
 		        coord = c("imagerow","imagecol"),
+	                resolution = 0.8,
 		        celltype.column = "idents",
 		        sc.sub.size = NULL,
 		      	min.sc.cell = 50,
@@ -107,4 +111,37 @@ p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
 
-## Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform.
+## 5. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform.
+- To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
+```
+st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
+# counts：The counts expression matrix of ST data, where rows represent genes and columns represent barcodes.
+# coord.df: A data frame containing spatial coordinates for the barcodes in the ST data. 
+# coord.label: A character vector specifying the column names in coord.df for the spatial coordinates.
+# meta.data : Optional metadata data frame, where rows are barcodes.
+```
+- Assign single cells to spatial spots by setting knn = 1, mean.cell.num = 1. Since each spot in Visium HD data contains only a single cell, the parameter max.cell.num is set to 1 for mapping. 
+- Visium HD high-resoluiton ST data of human CRC as an example
+- [Visium HD example data])<https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc>
+
+```
+sc.obj <- readRDS("path/sc.obj.rds")
+st.obj <- readRDS("path/st.obj.RDS")
+results <- CellMap(st.obj = st.obj,
+                    sc.obj = sc.obj,
+                    coord = c("x","y"),
+                    resolution = 0.3,
+                    celltype.column = "idents",
+                    sc.sub.size = NULL,
+                    min.sc.cell = 50,
+                    factor.size = 0.1,
+                    seed.num = 10,
+                    pvalue.cut = 0.1,
+                    knn = 1,
+                    mean.cell.num = 1,
+                    max.cell.num = 1,
+                    n.workers = 4,
+                    verbose = TRUE)
+SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors,image.alpha = 0) + 
+                   theme(legend.title = element_text(size = 14),  
+                   legend.text = element_text(size = 12))
