@@ -90,14 +90,6 @@ Details of the results is described in the table below.
      [INFO] Finish!
   
 ## Visualization 
-```
-sc.data <- sc.data %>%
-           NormalizeData() %>%
-           FindVariableFeatures() %>%
-           ScaleData() %>%
-           RunPCA() %>%
-           RunUMAP(dims = 1:30)
-```
 
 ```
 colors <-c("B-cells" = "#e68fac","CAFs" = "#a1caf1","Cancer Epithelial" = "#f7b565","Endothelial" = "#875692",
@@ -120,3 +112,5 @@ p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, 
 p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
+
+## Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform .
