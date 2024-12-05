@@ -39,23 +39,25 @@ A zip file containing single-cell and spatial transcriptomics data can be downlo
 ```
 sc.data <- readRDS("sc.obj.rds")
 st.data <- readRDS("st.obj.rds")
-ref.expr <- GetAssayData(sc.data, slot = 'counts') %>% as.data.frame
-ref.anno <- sc.data$celltype_major %>% as.vector
-coord.df <- st.data@images$image@coordinates[,c(4,5)]
 ```
 
 ## Setting the parameters
 |**Parameters**|**Description**                      |
 |----------|-----------------------------------------|
-|st.data   |A Seurat object of spatial transcriptomics data.|
-|coord.df  |The spatial coordinates of tissue sections in spatial transcriptomic data.|
-|ref.expr  | The gene expression profile of scRNA-seq data.|
-|ref.anno  |Cell type information of scRNA-seq data, corresponding to the above `ref.expr`.|
+|st.obj    |Seurat object of spatial transcriptome data.|
+|sc.obj    |Seurat object of scRNA-seq data.|
+|coord     |Coordinates column names in ST images slot.coord = c("x","y") or coord = c("imagerow","imagecol").|
+|celltype.column|The column name for cell type in the single-cell Seurat object, with the default value as "idents".|
+|sc.sub.size|Downsampling proportion or number for scRNA-seq data. Default: NULL.|
+|min.sc.cells|The minimum number of cell types in scRNA-seq data.Default: 50.|
 |factor.size|Factor size for scaling the weight of gene expression. Default: 0.1.|
-|seed.num|Number of seed genes of each cell type for recognizing marker genes. Default: 10.|
-|pvalue.cut|Threshold for filtering cell type-specific markers. Default: 0.01|
-|knn       |The number of nearest neighboring single cells for each spot. Default: 5|
-|verbose   |Show running messages or not. Default: TRUE.|
+|seed.num|Number of seed genes of each cell type for recognizing candidate markers. Default: 10.|
+|pvalue.cut|Threshold for filtering cell type marker genes. Default: 0.1.|
+|knn|The number of nearest neighboring single cells for each spot. Set to 5 for low-resolution data and 1 for high-resolution data.|
+|mean.cell.num|The average number of single cells in the spot.Set to 5 for low-resolution data and 1 for high-resolution data.|
+|max.cell.num|The maximum number of cells within each spot, if equal to 1, indicates that each spot contains only a single cell.|
+|n.workers|Number of cores to be used for parallel processing. Default: 4.|
+|verbose|Show running messages or not. Default: TRUE.|
 
 ## Run CellMapper  to assign single cells to spatial locations.
 Details of the results is described in the table below.
