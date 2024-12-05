@@ -60,19 +60,19 @@ st.obj <- readRDS("st.obj.rds")
 ## 4. Run CellMap to assign single cells on 10X Visium spatial transcriptome data.
 	results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
-		        	coord = c("imagerow","imagecol"),
-	                	resolution = 0.8,
-		        	celltype.column = "idents",
-		        	sc.sub.size = NULL,
-		      		min.sc.cell = 50,
-                      factor.size = 0.1,
-                      seed.num = 10,
-                      pvalue.cut = 0.1,
-                      knn = 5,
-		      		mean.cell.num = 5,
-		      		max.cell.num = 10,
-		      		n.workers = 4,
-                      verbose = TRUE)
+		        coord = c("imagerow","imagecol"),
+	                resolution = 0.8,
+		        celltype.column = "idents",
+		        sc.sub.size = NULL,
+		      	min.sc.cell = 50,
+                	factor.size = 0.1,
+                      	seed.num = 10,
+                      	pvalue.cut = 0.1,
+                      	knn = 5,
+		      	mean.cell.num = 5,
+		      	max.cell.num = 10,
+		      	n.workers = 4,
+                      	verbose = TRUE)
    
      [INFO] Identification of cell type-specific genes...
      [INFO] Estimate the number of single cells in the spot
