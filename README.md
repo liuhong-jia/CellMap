@@ -110,7 +110,7 @@ p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
 
-## 5. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform.
+## 5. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
 ```
 st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
