@@ -57,7 +57,7 @@ st.obj <- readRDS("st.obj.rds")
 |n.workers|Number of cores to be used for parallel processing. Default: 4.|
 |verbose|Show running messages or not. Default: TRUE.|
 
-## 4. Run CellMap to assign single cells on 10X Visium spatial transcriptome data.
+## 4. Run CellMap to assign single cells on 10X Visium spatial transcriptome data
 	results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
 		        	coord = c("imagerow","imagecol"),
@@ -119,7 +119,7 @@ st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = m
 # coord.label: A character vector specifying the column names in coord.df for the spatial coordinates.
 # meta.data : Optional metadata data frame, where rows are barcodes.
 ```
-- Assign single cells to spatial spots by setting knn = 1, mean.cell.num = 1. Since each spot in Visium HD data contains only a single cell, the parameter max.cell.num is set to 1 for mapping. 
+- Assign single cells to spatial spots by setting knn = 1, mean.cell.num = 1. Since each spot in Visium HD data contains only a single cell, the parameter max.cell.num is set to 1 for mapping
 - Visium HD high-resoluiton ST data of human CRC as an example(<https://www.10xgenomics.com/products/visium-hd-spatial-gene-expression/dataset-human-crc>)
 
 - scRNA-seq preprocessing
