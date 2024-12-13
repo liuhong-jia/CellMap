@@ -4,7 +4,6 @@
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param sc.obj Seurat object of scRNA-seq data.
 #' @param coord Coordinates column names in ST images slot.coord = c("x","y") or coord = c("imagerow","imagecol").
-#' @param resolution The clustering resolution for spatial transcriptomics data. Default:0.3.
 #' @param celltype.column The column name for cell type in the single-cell Seurat object, with the default value as "idents".
 #' @param sc.sub.size Downsampling proportion or number for scRNA-seq data. Default: NULL.
 #' @param min.sc.cells The minimum number of cell types in scRNA-seq data.Default: 50
@@ -26,7 +25,6 @@
 CellMap <- function(st.obj = st.obj,
                     sc.obj = sc.obj,
 					coord = c("x","y"),
-          resolution = 0.3,
 					celltype.column = "idents",
 					sc.sub.size = NULL,
 					min.sc.cell = 50,
@@ -40,7 +38,7 @@ CellMap <- function(st.obj = st.obj,
                     verbose = TRUE)
 { 
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
-	st.obj <- processSpatialData(st.obj,resolution = resolution)
+	st.obj <- processSpatialData(st.obj)
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
