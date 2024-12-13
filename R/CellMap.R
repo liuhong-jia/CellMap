@@ -19,7 +19,6 @@
 #' @export Seurat object of assignment result. 
 ##########################################################################################################
 
-#' @example scMap <- CellMap(st.obj,sc.obj,coord = c("x","y"),n.workers = 4,verbose = TRUE)
 							  
 
 
