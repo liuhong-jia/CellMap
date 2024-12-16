@@ -59,21 +59,16 @@ createSpObj <- function(counts, coord.df, coord.label = c("x", "y"), meta.data =
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param assay The assay to be used for SCTransform normalization. Default is "Spatial".
 #' @param pca_dims Number of principal components to use for UMAP and neighbor finding. Default is 30.
-#' @param resolution The resolution parameter for the FindClusters function. Default is 0.3.
 #' @return A Seurat object with SCTransform normalization, PCA, UMAP, and clustering results.
 #' @export
 
 ##########################################################################################################
-#' @examples st.obj <- processSpatialData(st.obj,resolution = resolution)
+#' @examples st.obj <- processSpatialData(st.obj)
 
 
-processSpatialData <- function(st.obj, assay = "Spatial", pca_dims = 30, resolution = resolution) {
+processSpatialData <- function(st.obj, assay = "Spatial") {
   st.obj <- st.obj[, intersect(colnames(st.obj),rownames(GetTissueCoordinates(st.obj)))]
-  st.obj <- SCTransform(st.obj,assay = assay) %>%
-            RunPCA() %>%
-            RunUMAP(dims = 1:pca_dims)%>%
-			FindNeighbors()%>%
-			FindClusters(resolution = resolution)
+  st.obj <- SCTransform(st.obj,assay = assay)
             return(st.obj)
 }
 
