@@ -55,11 +55,10 @@ createSpObj <- function(counts, coord.df, coord.label = c("x", "y"), meta.data =
 
 ##########################################################################################################
 #' @title Process Spatial Transcriptomics Data
-#' @description A function to perform SCTransform normalization, PCA, UMAP, neighbor finding, and clustering on a Seurat object for spatial transcriptomics data.
+#' @description A function to perform SCTransform normalization for spatial transcriptomics data.
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param assay The assay to be used for SCTransform normalization. Default is "Spatial".
-#' @param pca_dims Number of principal components to use for UMAP and neighbor finding. Default is 30.
-#' @return A Seurat object with SCTransform normalization, PCA, UMAP, and clustering results.
+#' @return A Seurat object with SCTransform normalization.
 #' @export
 
 ##########################################################################################################
