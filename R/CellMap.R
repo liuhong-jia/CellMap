@@ -37,7 +37,7 @@ CellMap <- function(st.obj = st.obj,
                     verbose = TRUE)
 { 
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
-	st.obj <- processSpatialData(st.obj,resolution = resolution)
+	st.obj <- processSpatialData(st.obj)
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
 	genes <- intersect(rownames(st.obj),rownames(sc.obj))
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
