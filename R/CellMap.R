@@ -39,15 +39,14 @@ CellMap <- function(st.obj = st.obj,
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
 	st.obj <- processSpatialData(st.obj)
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
-	genes <- intersect(rownames(st.obj),rownames(sc.obj))
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
-	avg.expr.ref <- AverageExpression(sc.obj[genes,], assay ="SCT")$SCT 
+	avg.expr.ref <- AverageExpression(sc.obj, assay ="SCT")$SCT 
 	seed.genes <- identSeedGenes(avg.expr.ref, factor.size, count = seed.num)
   
 	ref.markers <- searchMarkersByCorr(
-		GetAssayData(sc.obj[genes,]) %>% as.matrix, 
+		GetAssayData(sc.obj) %>% as.matrix, 
 		seed.genes, 
 		scale.data = TRUE,
 		p.cut = pvalue.cut,
@@ -91,18 +90,14 @@ CellMap <- function(st.obj = st.obj,
 	sim.cells <- linearAllocation(sim,num.cells)
 	
 	print('[INFO] Map single cells onto spatial spots',verbose = verbose)
-	
 	cell.coords <- getRandomCoords(st.obj,sim.cells,n.workers = 4)
-	
 	mapping <- mapSctoSpatial(st.obj, sc.obj, sim.cells)  
-	
 	print('[INFO] Construct Seurat object',verbose = verbose)
 	sc.out <- createSeuratObj(st.obj,sc.obj, mapping)
-  
+
 	##deconve
 	metadata <- sc.out@meta.data[,c("CellType","SpotName")]
 	type.counts <- metadata %>% count(SpotName, CellType) 
-
 	celltype.prop <- type.counts %>% 
 	group_by(SpotName) %>% 
 		mutate(Proportion = n / sum(n)) %>% 
@@ -113,7 +108,6 @@ CellMap <- function(st.obj = st.obj,
   
 	rownames(celltype.prop) <- celltype.prop$SpotName 
 	celltype.prop <- celltype.prop[,-1]
-  
 	print('[INFO] Finish!',verbose = verbose)
   
 	return(list(sc.out = sc.out,decon = celltype.prop))
