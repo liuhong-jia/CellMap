@@ -39,6 +39,11 @@ CellMap <- function(st.obj = st.obj,
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
 	st.obj <- processSpatialData(st.obj)
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
+	
+	##If it is MERFISH data, the shared genes between the st and sc data need to be filtered.
+	##genes <- intersect(rownames(sc.obj),rownames(st.obj))
+	##sc.obj <- sc.obj[genes,]
+	##st.obj <- st.obj[genes,]
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
