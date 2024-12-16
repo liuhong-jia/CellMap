@@ -190,7 +190,6 @@ st.obj <- createSpatialObject(counts, coord.df, coord.label = c("x", "y"), meta.
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("x","y"),
-                    resolution = 0.3,
                     celltype.column = "idents",
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
