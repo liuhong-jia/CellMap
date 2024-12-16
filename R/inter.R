@@ -205,7 +205,7 @@ trainModel <- function(st.obj,sc.obj,nearCells,markers,n.workers = 4){
 	y.train <- merged.data$cluster %>% as.character %>% as.factor
  
 	#model training
-	rf.model <- randomForest(x.train, y.train, ntree = 500)
+	rf.model <- randomForest(x.train, y.train, ntree = 1000)
 
 	#model prediction
 	x.test <- GetAssayData(sc.obj[genes,],slot = "data") %>% as.matrix %>% t
