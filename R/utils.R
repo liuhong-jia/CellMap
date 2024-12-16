@@ -296,7 +296,7 @@ getSimCells <- function(sim.matrix, num.cells) {
 
 getRandomCoords <- function(st.obj,sim.cells,n.workers = 4) {
   future::plan("multicore", workers = n.workers)
-  spot.coords <- GetTissueCoordinates(st.obj) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
+  spot.coords <- GetTissueCoordinates(st.obj,scale = NULL) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
   #Estimated spot diameter
   kNN.dist <- dbscan::kNN(spot.coords,k=4)$dist
   spot.diameter <- median(kNN.dist) %>% round
@@ -332,7 +332,7 @@ getRandomCoords <- function(st.obj,sim.cells,n.workers = 4) {
 
 
 mapSctoSpatial <- function(st.obj, sc.obj,sim.cells) {
-  coord.df <- GetTissueCoordinates(st.obj) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
+  coord.df <- GetTissueCoordinates(st.obj,scale = NULL) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
   st.obj <- st.obj[,rownames(coord.df)]
   sim.cells <- sim.cells[rownames(coord.df)]
   cord.new <- getRandomCoords(st.obj,sim.cells)
