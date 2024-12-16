@@ -4,7 +4,6 @@
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param sc.obj Seurat object of scRNA-seq data.
 #' @param coord Coordinates column names in ST images slot.coord = c("x","y") or coord = c("imagerow","imagecol").
-#' @param resolution The clustering resolution for spatial transcriptomics data. Default:0.3.
 #' @param celltype.column The column name for cell type in the single-cell Seurat object, with the default value as "idents".
 #' @param sc.sub.size Downsampling proportion or number for scRNA-seq data. Default: NULL.
 #' @param min.sc.cells The minimum number of cell types in scRNA-seq data.Default: 50
@@ -40,14 +39,15 @@ CellMap <- function(st.obj = st.obj,
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
 	st.obj <- processSpatialData(st.obj,resolution = resolution)
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
+	genes <- intersect(rownames(st.obj),rownames(sc.obj))
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
-	avg.expr.ref <- AverageExpression(sc.obj, assay ="SCT")$SCT 
+	avg.expr.ref <- AverageExpression(sc.obj[genes,], assay ="SCT")$SCT 
 	seed.genes <- identSeedGenes(avg.expr.ref, factor.size, count = seed.num)
   
 	ref.markers <- searchMarkersByCorr(
-		GetAssayData(sc.obj) %>% as.matrix, 
+		GetAssayData(sc.obj[genes,]) %>% as.matrix, 
 		seed.genes, 
 		scale.data = TRUE,
 		p.cut = pvalue.cut,
