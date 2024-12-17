@@ -202,6 +202,9 @@ results <- CellMap(st.obj = st.obj,
                     max.cell.num = 1,
                     n.workers = 4,
                     verbose = TRUE)
+colors <- c("B cells" = "#6baed6","Endothelial" = "#66c2a5","Fibroblast" = "#f781bf",
+            "Intestinal Epithelial" = "#fc8d62","Myeloid" = "#8da0cb","Neuronal" = "#377eb8",
+			"Smooth Muscle" = "#ffed6f","T cells" = "#ccebc5","Tumor" = "#ee6655")
 SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors,image.alpha = 0) + 
                    theme(legend.title = element_text(size = 14),  
                    legend.text = element_text(size = 12))
