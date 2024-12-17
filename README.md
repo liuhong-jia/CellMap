@@ -16,10 +16,7 @@ devtools::install_github("liuhong-jia/CellMap")
   R version >= 4.3.0.  
   R packages: Seurat, dplyr, ggplot2, Matrix, clue, jsonlite, magrittr, randomForest, parallel
 ## 2. Importing packages and preparing input data(scRNA-seq data and spatial transcriptomes data)
-- 10X Visium low-resolution ST data of human HER2+ breast cancer as an example
-- A zip file containing single-cell and spatial transcriptomics data can be downloaded from the following link:
-- [example data](https://drive.google.com/file/d/1lu0Y8hknGm6aVKogXZmQAUM7PsxAZghX/view?usp=drive_link)
-
+- 10X Visium low-resolution ST data of human HER2+ breast cancer as an example(<https://zenodo.org/records/4739739>)
 ```
 library(CellMap)
 library(devtools)
