@@ -115,6 +115,9 @@ ref.obj <- hcl.sc
 ref.expr <- GetAssayData(ref.obj, slot = 'data') %>% as.data.frame
 ref.anno <- Idents(ref.obj) %>% as.character
 sc.obj <- readRDS("sc.obj.rds")
+sc.obj$seurat_clusters <- factor(sc.obj$seurat_clusters) 
+sc.obj$seurat_clusters <- factor(sc.obj$seurat_clusters, levels = sort(unique(sc.obj$seurat_clusters)))
+Idents(sc.obj) <- sc.obj$seurat_clusters
 results = scAnno(query = sc.obj,
 	ref.expr = ref.expr,
 	ref.anno = ref.anno,
