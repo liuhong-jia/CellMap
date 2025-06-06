@@ -135,6 +135,35 @@ sc.obj <- results$query
 Idents(sc.obj) <- sc.obj$scAnno
 ```
 - Visualization
+```
+table(Idents(sc.obj))
+
+   Endothelial cell          Fibroblast  Smooth muscle cell     Epithelial cell
+               1092                1428                 915                2442
+               hESC              B cell B cell (Plasmocyte)              T cell
+                471                 659                 228               10771
+         Macrophage      Dendritic cell          Enterocyte
+                867                 423                  15
+colors <- c(
+  "B cell" = "#e68fac",
+  "B cell (Plasmocyte)" = "#a1caf1",
+  "Dendritic cell" = "#f7b565",
+  "Endothelial cell" = "#875692",
+  "Enterocyte" = "#d14c6f",
+  "Epithelial cell" = "#894846",
+  "Fibroblast" = "#848482",
+  "hESC" = "#56af8f",
+  "Macrophage" = "#0067a5",
+  "Smooth muscle cell" = "#ff7f50",
+  "T cell" = "#6a5acd"
+)
+p <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
+        cols =colors,
+        pt.size = 1,
+        repel = T ) + 
+  NoLegend() + labs(x = "UMAP1",y = "UMAP2") +
+  theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
+  theme(axis.title.x =element_text(size=24), axis.title.y=element_text(size=24))+theme(plot.title = element_text(hjust = 0.5,size = 20, face = "bold"),axis.text=element_text(size=12,face = "bold"),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
 
 -Running CellMap after annotating cell types in single-cell data.
 ```
@@ -155,7 +184,13 @@ results <-  CellMap(st.obj = st.obj,
                       	verbose = TRUE)
 ```
 - Visualization
-
+```
+p <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
+  theme(
+    legend.title = element_text(size = 14),  
+    legend.text = element_text(size = 12)   
+  )
+```
 ## 6. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
 ```
