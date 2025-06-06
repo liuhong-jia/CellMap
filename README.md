@@ -105,7 +105,7 @@ p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
 ## 5. Run CellMap with single-cell data lacking cell type annotation
-- In cases where cell type information is not provided in the single-cell dataset, we applied our in-house automated annotation tool, scAnno, to perform cell type identification. We also use HER2+ breast cancer data as an example for demonstratio example.
+- In cases where cell type information is not provided in the single-cell dataset, we applied our in-house automated annotation tool, scAnno, to perform cell type identification. We also use HER2+ breast cancer data as an example for demonstration example.
 ```
 library(scAnno)
 data(gene.anno)
