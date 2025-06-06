@@ -104,8 +104,38 @@ p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, 
 p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
+## 5. Run CellMap with single-cell data lacking cell type annotation
+```
+sc.obj <- readRDS("sc.obj.rds")
+st.obj <- readRDS("st.obj.rds")
+```
+library(scAnno)
+data(gene.anno)
+data(tcga.data.u)
+data(hcl.sc)
+ref.obj <- hcl.sc
+ref.expr <- GetAssayData(ref.obj, slot = 'data') %>% as.data.frame
+ref.anno <- Idents(ref.obj) %>% as.character
+results = scAnno(query = obj.seu,
+	ref.expr = ref.expr,
+	ref.anno = ref.anno,
+	save.markers = "markers",
+	cluster.col = "seurat_clusters",
+	factor.size = 0.1,
+	pvalue.cut = 0.01,
+	seed.num = 10,
+	redo.markers = FALSE,
+	gene.anno = gene.anno,
+	permut.num = 100,
+	permut.p = 0.01,
+	show.plot = TRUE,
+	verbose = TRUE,
+	tcga.data.u = tcga.data.u
+	)
+sc.obj <- results$query
+Idents(sc.obj) <- sc.obj$scAnno
 
-## 5. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
+## 6. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
 ```
 st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
