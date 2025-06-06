@@ -165,7 +165,8 @@ p1 <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
   theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
   theme(axis.title.x =element_text(size=24), axis.title.y=element_text(size=24))+theme(plot.title = element_text(hjust = 0.5,size = 20, face = "bold"),axis.text=element_text(size=12,face = "bold"),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
 ```
--Running CellMap after annotating cell types in single-cell data.
+![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/scAnno.png)
+- Running CellMap after annotating cell types in single-cell data.
 ```
 st.obj <- readRDS("st.obj")
 results <-  CellMap(st.obj = st.obj,
@@ -185,12 +186,13 @@ results <-  CellMap(st.obj = st.obj,
 ```
 - Visualization
 ```
-p <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
+p2 <- SpatialDimPlot(results$sc.out, group.by = "CellType", pt.size.factor = 1, label.size = 8, cols = colors) + 
   theme(
     legend.title = element_text(size = 14),  
     legend.text = element_text(size = 12)   
   )
 ```
+![image](https://github.com/liuhong-jia/CellMap/blob/main/vignettes/scAnno.CellMap.png)
 ## 6. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
 ```
