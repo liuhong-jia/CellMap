@@ -164,7 +164,7 @@ p <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
   NoLegend() + labs(x = "UMAP1",y = "UMAP2") +
   theme(panel.border = element_rect(fill=NA,color= "black",size= 1,linetype="solid"))+
   theme(axis.title.x =element_text(size=24), axis.title.y=element_text(size=24))+theme(plot.title = element_text(hjust = 0.5,size = 20, face = "bold"),axis.text=element_text(size=12,face = "bold"),axis.title.x=element_text(size=14),axis.title.y=element_text(size=14))
-
+```
 -Running CellMap after annotating cell types in single-cell data.
 ```
 st.obj <- readRDS("st.obj")
