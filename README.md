@@ -114,7 +114,7 @@ data(hcl.sc)
 ref.obj <- hcl.sc
 ref.expr <- GetAssayData(ref.obj, slot = 'data') %>% as.data.frame
 ref.anno <- Idents(ref.obj) %>% as.character
-obj.seu <- readRDS("sc.obj.rds")
+sc.obj <- readRDS("sc.obj.rds")
 results = scAnno(query = obj.seu,
 	ref.expr = ref.expr,
 	ref.anno = ref.anno,
@@ -154,6 +154,7 @@ results <-  CellMap(st.obj = st.obj,
 		      		n.workers = 4,
                       	verbose = TRUE)
 ```
+- Visualization
 
 ## 6. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
