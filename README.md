@@ -157,7 +157,7 @@ colors <- c(
   "Smooth muscle cell" = "#ff7f50",
   "T cell" = "#6a5acd"
 )
-p <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
+p1 <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
         cols =colors,
         pt.size = 1,
         repel = T ) + 
