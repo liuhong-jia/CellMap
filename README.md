@@ -170,19 +170,19 @@ p1 <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
 ```
 st.obj <- readRDS("st.obj")
 results <-  CellMap(st.obj = st.obj,
-                        sc.obj = sc.obj,
-		        	coord = c("imagerow","imagecol"),
-		        	celltype.column = "idents",
-		        	sc.sub.size = NULL,
-		      		min.sc.cell = 50,
-                		factor.size = 0.1,
-                      	seed.num = 10,
-                      	pvalue.cut = 0.1,
-                      	knn = 5,
-		      		mean.cell.num = 5,
-		      		max.cell.num = 10,
-		      		n.workers = 4,
-                      	verbose = TRUE)
+                    sc.obj = sc.obj,
+                    coord = c("imagerow","imagecol"),
+                    celltype.column = "idents",
+                    sc.sub.size = NULL,
+                    min.sc.cell = 50,
+                    factor.size = 0.1,
+                    seed.num = 10,
+                    pvalue.cut = 0.1,
+                    knn = 5,
+                    mean.cell.num = 5,
+                    max.cell.num = 10,
+                    n.workers = 4,
+                    verbose = TRUE)
 ```
 - Visualization
 ```
