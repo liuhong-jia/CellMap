@@ -105,8 +105,8 @@ p1 + p2
 ```
 ![image](https://github.com/liuhong-jia/CellMapper/blob/main/vignettes/mapping.png)
 ## 5. Run CellMap with single-cell data lacking cell type annotation
+- In cases where cell type information is not provided in the single-cell dataset, we applied our in-house automated annotation tool, scAnno, to perform cell type identification.
 ```
-sc.obj <- readRDS("sc.obj.rds")
 library(scAnno)
 data(gene.anno)
 data(tcga.data.u)
@@ -114,6 +114,7 @@ data(hcl.sc)
 ref.obj <- hcl.sc
 ref.expr <- GetAssayData(ref.obj, slot = 'data') %>% as.data.frame
 ref.anno <- Idents(ref.obj) %>% as.character
+obj.seu <- readRDS("sc.obj.rds")
 results = scAnno(query = obj.seu,
 	ref.expr = ref.expr,
 	ref.anno = ref.anno,
@@ -137,6 +138,7 @@ Idents(sc.obj) <- sc.obj$scAnno
 
 -Running CellMap after annotating cell types in single-cell data.
 ```
+st.obj <- readRDS("st.obj")
 results <-  CellMap(st.obj = st.obj,
                         sc.obj = sc.obj,
 		        	coord = c("imagerow","imagecol"),
