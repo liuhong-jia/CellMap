@@ -107,8 +107,6 @@ p1 + p2
 ## 5. Run CellMap with single-cell data lacking cell type annotation
 ```
 sc.obj <- readRDS("sc.obj.rds")
-st.obj <- readRDS("st.obj.rds")
-```
 library(scAnno)
 data(gene.anno)
 data(tcga.data.u)
@@ -134,6 +132,26 @@ results = scAnno(query = obj.seu,
 	)
 sc.obj <- results$query
 Idents(sc.obj) <- sc.obj$scAnno
+```
+- Visualization
+
+-Running CellMap after annotating cell types in single-cell data.
+```
+results <-  CellMap(st.obj = st.obj,
+                        sc.obj = sc.obj,
+		        	coord = c("imagerow","imagecol"),
+		        	celltype.column = "idents",
+		        	sc.sub.size = NULL,
+		      		min.sc.cell = 50,
+                		factor.size = 0.1,
+                      	seed.num = 10,
+                      	pvalue.cut = 0.1,
+                      	knn = 5,
+		      		mean.cell.num = 5,
+		      		max.cell.num = 10,
+		      		n.workers = 4,
+                      	verbose = TRUE)
+```
 
 ## 6. Run CellMap to assign single cells on high-resolution ST data ,such as Slide-seq V2,Stereo-seq,Visium HD and Imaging-based ST platform
 - To ensure compatibility with CellMap, the spatial transcriptomics (ST) data derived from high-resolution datasets across multiple platforms should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
