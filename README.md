@@ -159,25 +159,19 @@ results <-  CellMap(st.obj = st.obj,
 - Visualization
 ```
 table(Idents(sc.obj))
-
-   Endothelial cell          Fibroblast  Smooth muscle cell     Epithelial cell
-               1092                1428                 915                2442
-               hESC              B cell B cell (Plasmocyte)              T cell
-                471                 659                 228               10771
-         Macrophage      Dendritic cell          Enterocyte
-                867                 423                  15
+B cell   Endothelial cell    Epithelial cell         Fibroblast
+ 887               1092               2457               1428
+hESC            Myeloid Smooth muscle cell             T cell
+ 471               1290                915              10771
 colors <- c(
-  "B cell" = "#e68fac",
-  "B cell (Plasmocyte)" = "#a1caf1",
-  "Dendritic cell" = "#f7b565",
-  "Endothelial cell" = "#875692",
-  "Enterocyte" = "#d14c6f",
-  "Epithelial cell" = "#894846",
-  "Fibroblast" = "#848482",
-  "hESC" = "#56af8f",
-  "Macrophage" = "#0067a5",
-  "Smooth muscle cell" = "#ff7f50",
-  "T cell" = "#6a5acd"
+ "B cell" = "#e68fac",
+ "Fibroblast" = "#a1caf1",
+ "Epithelial cell" = "#f7b565",
+ "Endothelial cell" = "#875692",
+ "Myeloid" = "#d14c6f",
+ "Smooth muscle cell" = "#894846",
+ "hESC" = "#848482",
+ "T cell" = "#0067a5"
 )
 p1 <- DimPlot(sc.obj,group.by= "scAnno",label = T,label.size = 6,
         cols =colors,
