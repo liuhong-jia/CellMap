@@ -274,6 +274,7 @@ st.obj <- SCTransform(st.obj,assay = "Spatial") %>% RunPCA() %>% RunUMAP(dims = 
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("x","y"),
+                    norm.method = "NormalizeData",
                     celltype.column = "idents",
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
