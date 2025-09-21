@@ -55,21 +55,48 @@ createSpObj <- function(counts, coord.df, coord.label = c("x", "y"), meta.data =
 
 ##########################################################################################################
 #' @title Process Spatial Transcriptomics Data
-#' @description A function to perform SCTransform normalization for spatial transcriptomics data.
+#' @description A function to perform normalization for spatial transcriptomics data.
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param assay The assay to be used for SCTransform normalization. Default is "Spatial".
+#' @param resolution Resolution for clustering ST spots. Default: 0.5.
+#' @param norm.method Normalization methods for spatial transcriptomics data, norm.method = NormalizeData or SCTransform.
 #' @return A Seurat object with SCTransform normalization.
 #' @export
 
 ##########################################################################################################
-#' @examples st.obj <- processSpatialData(st.obj)
+#' @examples st.obj <- processSpatialData(st.obj,resolution = 0.5,norm.method = "NormalizeData")
 
 
-processSpatialData <- function(st.obj, assay = "Spatial") {
-  st.obj <- st.obj[, intersect(colnames(st.obj),rownames(GetTissueCoordinates(st.obj)))]
-  st.obj <- SCTransform(st.obj,assay = assay)
-            return(st.obj)
+processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution = 0.5,norm.method = c("NormalizeData", "SCTransform")) {
+
+  norm.method <- match.arg(norm.method)
+  st.obj <- st.obj[, intersect(colnames(st.obj), rownames(GetTissueCoordinates(st.obj)))]
+
+  if (norm.method == "NormalizeData") {
+    message("Using NormalizeData function for data normalization")
+    st.obj <- NormalizeData(st.obj, assay = assay)
+  } else if (norm.method == "SCTransform") {
+    message("Using SCTransform function for data normalization")
+    st.obj <- SCTransform(st.obj, assay = assay, verbose = FALSE)
+  }
+
+  if (!"seurat_clusters" %in% colnames(st.obj@meta.data)) {
+    message("No existing 'seurat_clusters' found — running downstream steps...")
+    st.obj <- st.obj %>%
+      FindVariableFeatures(assay = assay) %>%
+      ScaleData(assay = assay) %>%
+      RunPCA(assay = assay) %>%
+      RunUMAP(dims = 1:pca_dims) %>%
+      FindNeighbors(dims = 1:pca_dims) %>%
+      FindClusters(resolution = resolution)
+  } else {
+    message("'seurat_clusters' already present — skipping downstream steps.")
+  }
+
+  return(st.obj)
 }
+
+
 
 
 ##########################################################################################################
@@ -87,7 +114,7 @@ processSpatialData <- function(st.obj, assay = "Spatial") {
 
 
 
-processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL, min.sc.cells = 50) {
+processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL, min.sc.cells = 20) {
   
   if (!is.null(sc.sub.size)) {
     sc.obj <- if (sc.sub.size > 1) {
@@ -108,7 +135,8 @@ processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL
   filtered.idents <- names(cell.counts[cell.counts >= min.sc.cells])
   sc.obj <- subset(sc.obj, idents = filtered.idents)
  
-  sc.obj <- SCTransform(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
+  #sc.obj <- SCTransform(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
+  sc.obj <- NormalizeData(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
   sc.obj <- subset(sc.obj, subset = nFeature_RNA > 0)
   return(sc.obj)
 }
@@ -293,28 +321,34 @@ getSimCells <- function(sim.matrix, num.cells) {
 #' @examples cell.coords <- getRandomCoords(st.obj,sim.cells,n.workers = 4)
 
 
-getRandomCoords <- function(st.obj,sim.cells,n.workers = 4) {
+getRandomCoords <- function(st.obj, sim.cells, n.workers = 4) {
   future::plan("multicore", workers = n.workers)
-  spot.coords <- GetTissueCoordinates(st.obj,scale = NULL) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
-  #Estimated spot diameter
-  kNN.dist <- dbscan::kNN(spot.coords,k=4)$dist
-  spot.diameter <- median(kNN.dist) %>% round
+  spot.coords <- GetTissueCoordinates(st.obj, scale = NULL) %>% 
+    .[intersect(rownames(.), names(sim.cells)), 1:2]
+  kNN.dist <- dbscan::kNN(spot.coords, k=4)$dist
+  spot.diameter <- round(median(kNN.dist))
   spot.coords <- as.matrix(spot.coords)
-  sc.coords <- future.apply::future_lapply(1:nrow(spot.coords), function(i){
-    sp.coord <- spot.coords[i,]
+  
+  sc.coords <- future.apply::future_lapply(1:nrow(spot.coords), function(i) {
     cells <- lengths(sim.cells)[i]
-    theta <- runif(cells,0,2*pi) 
-    dis <- sqrt(runif(cells)) * (spot.diameter/2)
+    
+    if (cells == 0) return(NULL)
+    
+    sp.coord <- spot.coords[i, ]
+    theta <- runif(cells, 0, 2*pi)
+    dis <- sqrt(runif(cells)) * (spot.diameter / 2)
     cell.x <- sp.coord[1] + dis * cos(theta)
-    cell.y <- sp.coord[2] + dis * sin(theta) 
-    coords <- data.frame(cell.x,cell.y) 
-    coords$SPOT <- paste0(spot.coords[i, 1], "x", spot.coords[i, 2])
-    coords$centerX <- spot.coords[i, 1]
-    coords$centerY <- spot.coords[i, 2]
-    coords$SpotName <- rownames(spot.coords)[i] 
+    cell.y <- sp.coord[2] + dis * sin(theta)
+    
+    coords <- data.frame(cell.x, cell.y)
+    coords$SPOT <- paste0(sp.coord[1], "x", sp.coord[2])
+    coords$centerX <- sp.coord[1]
+    coords$centerY <- sp.coord[2]
+    coords$SpotName <- rownames(spot.coords)[i]
     coords
-  },future.seed = TRUE) %>% do.call(rbind, .) %>% as.data.frame
-  return (sc.coords)
+  }, future.seed = TRUE) %>% do.call(rbind, .) %>% as.data.frame()
+  
+  return(sc.coords)
 }
 
 ##########################################################################################################
@@ -330,20 +364,27 @@ getRandomCoords <- function(st.obj,sim.cells,n.workers = 4) {
 #' @example mapping <- mapSctoSpatial(st.obj, sc.obj, sim.cells)  
 
 
-mapSctoSpatial <- function(st.obj, sc.obj,sim.cells) {
-  coord.df <- GetTissueCoordinates(st.obj,scale = NULL) %>% .[intersect(rownames(.),names(sim.cells)),1:2]
-  st.obj <- st.obj[,rownames(coord.df)]
+mapSctoSpatial <- function(st.obj, sc.obj, sim.cells) {
+  coord.df <- GetTissueCoordinates(st.obj, scale = NULL) %>%
+    .[intersect(rownames(.), names(sim.cells)), 1:2]
+  st.obj <- st.obj[, rownames(coord.df)]
   sim.cells <- sim.cells[rownames(coord.df)]
-  cord.new <- getRandomCoords(st.obj,sim.cells)
+  
+  cord.new <- getRandomCoords(st.obj, sim.cells)
   map <- lapply(1:length(sim.cells), function(i) {
+    if (length(sim.cells[[i]]) == 0) return(NULL)
+    
     cords <- coord.df[i, ]
     sub.cords <- cord.new[cord.new$SPOT == paste0(cords[1], "x", cords[2]), ]
+    if (nrow(sub.cords) == 0) return(NULL)
+    
     sub.cords$CellType <- Idents(sc.obj)[sim.cells[[i]]] %>% as.vector()
     sub.cords$Cell <- sim.cells[[i]]
     sub.cords
   }) %>% do.call(rbind, .) %>% as.data.frame()
+  
   return(map)
-}	
+}
 
 
 #########################################################################################################
