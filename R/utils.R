@@ -67,7 +67,7 @@ createSpObj <- function(counts, coord.df, coord.label = c("x", "y"), meta.data =
 #' @examples st.obj <- processSpatialData(st.obj,resolution = 0.5,norm.method = "NormalizeData")
 
 
-processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution = 0.5,norm.method = c("NormalizeData", "SCTransform")) {
+processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution = 0.5,norm.method = norm.method) {
 
   norm.method <- match.arg(norm.method)
   st.obj <- st.obj[, intersect(colnames(st.obj), rownames(GetTissueCoordinates(st.obj)))]
@@ -98,7 +98,6 @@ processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution
 
 
 
-
 ##########################################################################################################
 #' @title Process scRNA-seq data.
 #' @description A function to perform SCTransform normalization, PCA, UMAP, neighbor finding, and clustering on a Seurat object for spatial transcriptomics data.
@@ -106,15 +105,16 @@ processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution
 #' @param celltype.column The column name for cell type in the single-cell Seurat object, with the default value as "idents".
 #' @param sc.sub.size Downsampling proportion or number for scRNA-seq data. Default: NULL
 #' @param min.sc.cells The minimum number of cell types in scRNA-seq data.Default: 50
+#' @param norm.method Normalization methods for scRNA-seq data, norm.method = NormalizeData or SCTransform.
 #' @return A Seurat object with SCTransform normalization.
 #' @export
 ##########################################################################################################
 
-#' @examples sc.obj <- processScData(sc.obj)
+#' @examples sc.obj <- processScData(sc.obj,)
 
 
 
-processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL, min.sc.cells = 20) {
+processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL, min.sc.cells = 20,norm.method = norm.method) {
   
   if (!is.null(sc.sub.size)) {
     sc.obj <- if (sc.sub.size > 1) {
@@ -135,8 +135,14 @@ processScData <- function(sc.obj, celltype.column = "idents", sc.sub.size = NULL
   filtered.idents <- names(cell.counts[cell.counts >= min.sc.cells])
   sc.obj <- subset(sc.obj, idents = filtered.idents)
  
-  #sc.obj <- SCTransform(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
-  sc.obj <- NormalizeData(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
+  if (norm.method == "NormalizeData") {
+    message("Using NormalizeData function for data normalization")
+    sc.obj <- NormalizeData(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
+  } else if (norm.method == "SCTransform") {
+    message("Using SCTransform function for data normalization")
+    sc.obj <- SCTransform(sc.obj)%>% FindVariableFeatures() %>% ScaleData() %>% RunPCA() %>% RunUMAP(dims = 1:30)
+  }
+  
   sc.obj <- subset(sc.obj, subset = nFeature_RNA > 0)
   return(sc.obj)
 }
@@ -294,7 +300,6 @@ getELDist <- function(sc.data, st.data) {
 
 #' @example sim.cells <- getSimCells(similar.matrix, num.cells %>% as.vector)  
 
-#%>% unlist(., use.names = FALSE)
 
 getSimCells <- function(sim.matrix, num.cells) {
   num.spots <- nrow(sim.matrix)
