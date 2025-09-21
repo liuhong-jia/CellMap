@@ -146,6 +146,7 @@ st.obj <- readRDS("st.obj")
 results <-  CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("imagerow","imagecol"),
+                    norm.method = "NormalizeData",
                     celltype.column = "idents",
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
