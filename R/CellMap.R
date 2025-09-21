@@ -13,6 +13,7 @@
 #' @param knn The number of nearest neighboring single cells for each spot. Set to 5 for low-resolution data and 1 for high-resolution data.
 #' @param mean.cell.num The average number of single cells in the spot.Set to 5 for low-resolution data and 1 for high-resolution data.
 #' @param max.cell.num The maximum number of cells within each spot, if equal to 1, indicates that each spot contains only a single cell.
+#' @param res Resolution for clustering ST spots. Default: 0.5.
 #' @param n.workers Number of cores to be used for parallel processing. Default: 4.
 #' @param verbose Show running messages or not. Default: TRUE.
 #' @export Seurat object of assignment result. 
@@ -28,30 +29,30 @@ CellMap <- function(st.obj = st.obj,
 					sc.sub.size = NULL,
 					min.sc.cell = 50,
                     factor.size = 0.1,
-                    seed.num = 10,
+                    seed.num = 30,
                     pvalue.cut = 0.1,
                     knn = 5,
 					mean.cell.num = 5,
 					max.cell.num = 10,
+          res = 0.5,
 					n.workers = 4,
                     verbose = TRUE)
 { 
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
-	st.obj <- processSpatialData(st.obj)
+  st.obj <- processSpatialData(st.obj,res = 0.5,norm.method = "NormalizeData")
 	sc.obj <- processScData(sc.obj,celltype.column = "idents")
 	
-	##If it is MERFISH data, the shared genes between the st and sc data need to be filtered.
-	##genes <- intersect(rownames(sc.obj),rownames(st.obj))
-	##sc.obj <- sc.obj[genes,]
-	##st.obj <- st.obj[genes,]
+	genes <- intersect(rownames(sc.obj),rownames(st.obj))
+	sc.obj.sub <- sc.obj[genes,]
+	st.obj <- st.obj[genes,]
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
-	avg.expr.ref <- AverageExpression(sc.obj, assay ="SCT")$SCT 
+  avg.expr.ref <- AverageExpression(sc.obj.sub, assay ="RNA")$RNA
 	seed.genes <- identSeedGenes(avg.expr.ref, factor.size, count = seed.num)
   
 	ref.markers <- searchMarkersByCorr(
-		GetAssayData(sc.obj) %>% as.matrix, 
+		GetAssayData(sc.obj.sub) %>% as.matrix, 
 		seed.genes, 
 		scale.data = TRUE,
 		p.cut = pvalue.cut,
@@ -63,7 +64,7 @@ CellMap <- function(st.obj = st.obj,
 		ref.markers, 
 		avg.expr.ref, 
 		min.size = 10, 
-		max.size = 200,
+		max.size = 200
 	)
 	print('[INFO] Estimate the number of single cells in the spot',verbose = verbose)
 	
@@ -72,19 +73,18 @@ CellMap <- function(st.obj = st.obj,
 		names(num.cells) <- colnames(st.data.counts)
     } else {
 		num.cells <- getCellNumber(st.data.counts, mean.cell.num = mean.cell.num)
-    } 
+  } 
 	
 	print('[INFO] Integrate single-cell and spatial spot data',verbose = verbose)
   
-	sc.st.obj <- getInterdata(sc.obj, st.obj,coord = coord ,markers)
+	sc.st.obj <- getInterdata(sc.obj.sub, st.obj,coord = coord ,markers)
   
 	dist <- getDistMatrix(sc.st.obj)
 	nearCells <- getCells(dist,k = knn)
   
 	print('[INFO] Train a random forest model and predict,waiting...',verbose = verbose)
 
-
-	if (ncol(sc.obj) > ncol(st.obj)) {
+	if (ncol(sc.obj.sub) > sum(num.cells)) {
     pred <- trainModel(st.obj, sc.obj, nearCells, markers)
     sim <- getSimMatrix(pred$prediction, st.obj, sc.obj, markers)
     } else {
@@ -95,7 +95,7 @@ CellMap <- function(st.obj = st.obj,
 	sim.cells <- linearAllocation(sim,num.cells)
 	
 	print('[INFO] Map single cells onto spatial spots',verbose = verbose)
-	cell.coords <- getRandomCoords(st.obj,sim.cells,n.workers = 4)
+	cell.coords <- getRandomCoords(st.obj,sim.cells,n.workers = 1)
 	mapping <- mapSctoSpatial(st.obj, sc.obj, sim.cells)  
 	print('[INFO] Construct Seurat object',verbose = verbose)
 	sc.out <- createSeuratObj(st.obj,sc.obj, mapping)
