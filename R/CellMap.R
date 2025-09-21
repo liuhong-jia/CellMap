@@ -4,6 +4,7 @@
 #' @param st.obj Seurat object of spatial transcriptome data.
 #' @param sc.obj Seurat object of scRNA-seq data.
 #' @param coord Coordinates column names in ST images slot.coord = c("x","y") or coord = c("imagerow","imagecol").
+#' @param norm.method Normalization methods for scRNA-seq and ST data, norm.method = NormalizeData or SCTransform.
 #' @param celltype.column The column name for cell type in the single-cell Seurat object, with the default value as "idents".
 #' @param sc.sub.size Downsampling proportion or number for scRNA-seq data. Default: NULL.
 #' @param min.sc.cells The minimum number of cell types in scRNA-seq data.Default: 50
@@ -25,6 +26,7 @@
 CellMap <- function(st.obj = st.obj,
                     sc.obj = sc.obj,
 					coord = c("x","y"),
+          norm.method = c("NormalizeData","SCTransform")
 					celltype.column = "idents",
 					sc.sub.size = NULL,
 					min.sc.cell = 50,
@@ -39,8 +41,8 @@ CellMap <- function(st.obj = st.obj,
                     verbose = TRUE)
 { 
 	checkInputParams(st.obj, sc.obj, coord, celltype.column, sc.sub.size, min.sc.cell,factor.size, seed.num, pvalue.cut, knn, mean.cell.num, max.cell.num,n.workers, verbose)
-  st.obj <- processSpatialData(st.obj,res = 0.5,norm.method = "NormalizeData")
-	sc.obj <- processScData(sc.obj,celltype.column = "idents")
+  st.obj <- processSpatialData(st.obj,res = 0.5,norm.method = norm.method)
+	sc.obj <- processScData(sc.obj,celltype.column = "idents",norm.method = norm.method)
 	
 	genes <- intersect(rownames(sc.obj),rownames(st.obj))
 	sc.obj.sub <- sc.obj[genes,]
@@ -48,7 +50,15 @@ CellMap <- function(st.obj = st.obj,
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
-  avg.expr.ref <- AverageExpression(sc.obj.sub, assay ="RNA")$RNA
+ 
+  if (norm.method == "NormalizeData") {
+      avg.expr.ref <- AverageExpression(sc.obj.sub, assay = "RNA")$RNA
+  }  else if (norm.method == "SCTransform") {
+     avg.expr.ref <- AverageExpression(sc.obj.sub, assay = "SCT")$SCT
+    } else {
+    stop("Invalid norm.method. Choose either 'NormalizeData' or 'SCTransform'.")
+  }
+  
 	seed.genes <- identSeedGenes(avg.expr.ref, factor.size, count = seed.num)
   
 	ref.markers <- searchMarkersByCorr(
