@@ -110,7 +110,7 @@ processSpatialData <- function(st.obj,assay = "Spatial",pca_dims = 30,resolution
 #' @export
 ##########################################################################################################
 
-#' @examples sc.obj <- processScData(sc.obj,)
+#' @examples sc.obj <- processScData(sc.obj,norm.method = norm.method)
 
 
 
