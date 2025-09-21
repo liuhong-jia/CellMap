@@ -7,7 +7,6 @@
 #' @param coord Coordinates column names in st images slot.
 #' @return Seurat object of integrated sc and st data.
 #' @export 
-
 ##########################################################################################################	
 
 #' @example sc.st.obj <- getInterdata(sc.obj, st.obj,coord = c("imagerow","imagecol"),markers)
@@ -214,6 +213,7 @@ trainModel <- function(st.obj,sc.obj,nearCells,markers,n.workers = 4){
 	return(list(model = rf.model, prediction = sc.to.cluster))
 }
 
+
 ##########################################################################################################
 #' @title getSimMatrix
 #' @description Calculate the similarity of single cells and spots.
@@ -359,7 +359,10 @@ linearAllocation <- function(sim,num.cells){
       spot.name <- rep(names(cell.num),cell.num) %>% as.vector
       cell.name <- colnames(sim.matrix) %>% as.vector
       cost.mat <- 1 - mat
-      
+      if (any(!is.finite(cost.mat))) {
+      warning("Invalid values in cost.mat; skipping this cluster.")
+      return(NULL)
+      }
       solve <- solve_LSAP(cost.mat)
       cell <- cell.name[solve]
       df <- data.frame(SpotName = spot.name,Cell = cell)
@@ -374,8 +377,3 @@ linearAllocation <- function(sim,num.cells){
     return(df.list)
   }),recursive = FALSE)
 }
-
-
-
-
-
