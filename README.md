@@ -277,7 +277,7 @@ counts <- GetAssayData(st.data,layer = "counts")
 coord.df <- st.data@images$slice1.008um$centroids@coords %>% as.data.frame
 rownames(coord.df) <- st.data@images$slice1.008um@boundaries$centroids@cells
 metadata = st.data@meta.data
-st.obj <- createSpatialObject(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
+st.obj <- createSpObj(counts, coord.df, coord.label = c("x", "y"), meta.data = metadata)
 st.obj <- SCTransform(st.obj,assay = "Spatial") %>% RunPCA() %>% RunUMAP(dims = 1:30)%>% FindNeighbors() %>% FindClusters(resolution = 0.3)
 ```
 - Run CellMap
