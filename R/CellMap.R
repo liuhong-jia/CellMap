@@ -26,7 +26,7 @@
 CellMap <- function(st.obj = st.obj,
                     sc.obj = sc.obj,
 					coord = c("x","y"),
-          norm.method = c("NormalizeData","SCTransform")
+          norm.method = c("NormalizeData","SCTransform"),
 					celltype.column = "idents",
 					sc.sub.size = NULL,
 					min.sc.cell = 50,
