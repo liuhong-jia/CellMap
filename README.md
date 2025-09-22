@@ -46,7 +46,7 @@ st.obj <- readRDS("st.obj.rds")
 |sc.sub.size|Downsampling proportion or number for scRNA-seq data. Default: NULL.|
 |min.sc.cells|The minimum number of cell types in scRNA-seq data.Default: 50.|
 |factor.size|Factor size for scaling the weight of gene expression. Default: 0.1.|
-|seed.num|Number of seed genes of each cell type for recognizing candidate markers. Default: 10.|
+|seed.num|Number of seed genes of each cell type for recognizing candidate markers. Default: 30.|
 |pvalue.cut|Threshold for filtering cell type marker genes. Default: 0.1.|
 |knn|The number of nearest neighboring single cells for each spot. Set to 5 for low-resolution data and 1 for high-resolution data.|
 |mean.cell.num|The average number of single cells in the spot.Set to 5 for low-resolution data and 1 for high-resolution data.|
@@ -63,7 +63,7 @@ st.obj <- readRDS("st.obj.rds")
 		        	sc.sub.size = NULL,
 		      		min.sc.cell = 50,
                 		factor.size = 0.1,
-                      	seed.num = 10,
+                      	seed.num = 30,
                       	pvalue.cut = 0.1,
                       	knn = 5,
 		      		mean.cell.num = 5,
@@ -151,7 +151,7 @@ results <-  CellMap(st.obj = st.obj,
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
                     factor.size = 0.1,
-                    seed.num = 10,
+                    seed.num = 30,
                     pvalue.cut = 0.1,
                     knn = 5,
                     mean.cell.num = 5,
@@ -279,7 +279,7 @@ results <- CellMap(st.obj = st.obj,
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
                     factor.size = 0.1,
-                    seed.num = 10,
+                    seed.num = 30,
                     pvalue.cut = 0.1,
                     knn = 1,
                     mean.cell.num = 1,
