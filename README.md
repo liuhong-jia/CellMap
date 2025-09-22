@@ -62,6 +62,7 @@ Idents(sc.obj) <- sc.obj$celltype
 |knn|The number of nearest neighboring single cells for each spot. Set to 5 for low-resolution data and 1 for high-resolution data.|
 |mean.cell.num|The average number of single cells in the spot.Set to 5 for low-resolution data and 1 for high-resolution data.|
 |max.cell.num|The maximum number of cells within each spot, if equal to 1, indicates that each spot contains only a single cell.|
+|res|Resolution for clustering ST spots. Default: 0.5.|
 |n.workers|Number of cores to be used for parallel processing. Default: 4.|
 |verbose|Show running messages or not. Default: TRUE.|
 
@@ -79,6 +80,7 @@ Idents(sc.obj) <- sc.obj$celltype
                       	knn = 5,
 		      		mean.cell.num = 5,
 		      		max.cell.num = 10,
+		            res = 0.5,
 		      		n.workers = 4,
                       	verbose = TRUE)
    
@@ -285,7 +287,7 @@ st.obj <- SCTransform(st.obj,assay = "Spatial") %>% RunPCA() %>% RunUMAP(dims = 
 results <- CellMap(st.obj = st.obj,
                     sc.obj = sc.obj,
                     coord = c("x","y"),
-                    norm.method = "NormalizeData",
+                    norm.method = "SCTransform",
                     celltype.column = "idents",
                     sc.sub.size = NULL,
                     min.sc.cell = 50,
@@ -295,6 +297,7 @@ results <- CellMap(st.obj = st.obj,
                     knn = 1,
                     mean.cell.num = 1,
                     max.cell.num = 1,
+                    res = 0.5,
                     n.workers = 4,
                     verbose = TRUE)
 colors <- c("B cells" = "#6baed6","Endothelial" = "#66c2a5","Fibroblast" = "#f781bf",
