@@ -34,7 +34,18 @@ library(parallel)
 sc.obj <- readRDS("sc.obj.rds")
 st.obj <- readRDS("st.obj.rds")
 ```
-
+- To ensure compatibility with CellMap, the spatial transcriptomics (ST) data should first be processed using the createSpObj function, which standardizes the data into the required format for subsequent analysis within the CellMap framework.
+```
+st.obj <- createSpObj(counts, coord.df, coord.label = c("imagerow", "imagecol"), meta.data = metadata)
+# counts：The counts expression matrix of ST data, where rows represent genes and columns represent barcodes.
+# coord.df: A data frame containing spatial coordinates for the barcodes in the ST data. 
+# coord.label: A character vector specifying the column names in coord.df for the spatial coordinates.
+# meta.data : Optional metadata data frame, where rows are barcodes.
+```
+- Set the identities of the scRNA-seq data by using the cell-type annotation column when available; otherwise, use the clustering results (seurat_clusters).
+```
+Idents(sc.obj) <- sc.obj$celltype
+```
 ## 3. Setting the parameters
 |**Parameters**|**Description**                      |
 |----------|-----------------------------------------|
