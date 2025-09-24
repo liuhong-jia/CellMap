@@ -45,16 +45,16 @@ CellMap <- function(st.obj = st.obj,
 	sc.obj <- processScData(sc.obj,celltype.column = "idents",norm.method = norm.method)
 	
 	genes <- intersect(rownames(sc.obj),rownames(st.obj))
-	sc.obj.sub <- sc.obj[genes,]
+	sc.obj <- sc.obj[genes,]
 	st.obj <- st.obj[genes,]
   st.data.counts <- GetAssayData(st.obj,slot = "counts")
 	
 	print('[INFO] Searching candidate marker genes...',verbose = verbose)
  
   if (norm.method == "NormalizeData") {
-      avg.expr.ref <- AverageExpression(sc.obj.sub, assay = "RNA")$RNA
+      avg.expr.ref <- AverageExpression(sc.obj, assay = "RNA")$RNA
   }  else if (norm.method == "SCTransform") {
-     avg.expr.ref <- AverageExpression(sc.obj.sub, assay = "SCT")$SCT
+     avg.expr.ref <- AverageExpression(sc.obj, assay = "SCT")$SCT
     } else {
     stop("Invalid norm.method. Choose either 'NormalizeData' or 'SCTransform'.")
   }
@@ -62,7 +62,7 @@ CellMap <- function(st.obj = st.obj,
 	seed.genes <- identSeedGenes(avg.expr.ref, factor.size, count = seed.num)
   
 	ref.markers <- searchMarkersByCorr(
-		GetAssayData(sc.obj.sub) %>% as.matrix, 
+		GetAssayData(sc.obj) %>% as.matrix, 
 		seed.genes, 
 		scale.data = TRUE,
 		p.cut = pvalue.cut,
@@ -87,14 +87,14 @@ CellMap <- function(st.obj = st.obj,
 	
 	print('[INFO] Integrate single-cell and spatial spot data',verbose = verbose)
   
-	sc.st.obj <- getInterdata(sc.obj.sub, st.obj,coord = coord ,markers)
+	sc.st.obj <- getInterdata(sc.obj, st.obj,coord = coord ,markers)
   
 	dist <- getDistMatrix(sc.st.obj)
 	nearCells <- getCells(dist,k = knn)
   
 	print('[INFO] Train a random forest model and predict,waiting...',verbose = verbose)
 
-	if (ncol(sc.obj.sub) > sum(num.cells)) {
+	if (ncol(sc.obj) > sum(num.cells)) {
     pred <- trainModel(st.obj, sc.obj, nearCells, markers)
     sim <- getSimMatrix(pred$prediction, st.obj, sc.obj, markers)
     } else {
